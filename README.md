@@ -1,1 +1,1 @@
-# ADM_Assignmnets
+# ADM_Assignments

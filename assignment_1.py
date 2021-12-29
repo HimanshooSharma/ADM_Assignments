@@ -31,6 +31,8 @@ def reach_stationary_state(probability_vector, state_transition_matrix, steps):
         raise NoStationarySolutionForStepsError
 
 
+print(f"{Fore.GREEN}ADM Assignment 1 : DTMCs \n{Style.RESET_ALL}")
+
 initial_probability_vector = np.array([[1, 0]])
 
 transition_matrix = np.array([[0.98, 0.1], [0.02, 0.9]])
@@ -45,7 +47,8 @@ print(
     f"minute?{Style.RESET_ALL}"
 )
 print(
-    f"{Fore.GREEN}Probability that machine is in HPM after 8 minutes/steps is {probability_after_8_steps[0]}{Style.RESET_ALL} "
+    f"{Fore.GREEN}Probability that machine is in HPM after 8 minutes/steps is {probability_after_8_steps[0]}"
+    f"{Style.RESET_ALL} "
 )
 
 # What is the probability of producing a working part in the next minute?
@@ -63,26 +66,53 @@ print(
 )
 
 print(
-    f"{Fore.GREEN}Probability of of producing a working part given LPM {probability_of_lpm} and hpm "
+    f"{Fore.GREEN}Probability of of producing a working part given LPM {probability_of_lpm} and HPM "
     f"{probability_of_hpm} is {probability_of_working_part} {Style.RESET_ALL} "
 )
 
 # How long does the system need to reach a stationary solution?
+print(
+    f"{Fore.CYAN} How long does the system need to reach a stationary solution?{Style.RESET_ALL}"
+)
 probability_vector_at_stationary = None
 try:
     probability_vector_at_stationary, stationary_solution_step = reach_stationary_state(
         initial_probability_vector, transition_matrix, 300
     )
-    print(f"Steps needed to reach a a stationary solution: {stationary_solution_step}")
+    print(
+        f"{Fore.GREEN}Steps needed to reach a a stationary solution: {stationary_solution_step} {Style.RESET_ALL}"
+    )
 
 except NoStationarySolutionForStepsError:
-    print("No steady state found for specified steps!")
+    print(f"{Fore.RED}No steady state found for specified steps! {Style.RESET_ALL}")
 
 # What is the probability to be in HPM in steady state?
-
+print(
+    f"{Fore.CYAN}What is the probability to be in HPM in steady state?{Style.RESET_ALL}"
+)
 if probability_vector_at_stationary is not None:
     print(
-        f"The probability to be in HPM in steady state is {probability_vector_at_stationary[0]}"
+        f"{Fore.GREEN}The probability to be in HPM in steady state is {probability_vector_at_stationary[0]}"
+        f"{Style.RESET_ALL}"
     )
 else:
-    print("Steady state has not been found yet!")
+    print(f"{Fore.RED}Steady state has not been found yet!{Style.RESET_ALL}")
+
+
+# What is the average probability of producing a working part in steady state?
+
+print(
+    f"{Fore.CYAN}What is the average probability of producing a working part in steady state?{Style.RESET_ALL}"
+)
+
+if probability_vector_at_stationary is not None:
+    avg_prob_in_steady = (
+        probability_vector_at_stationary[0] * 0.95
+        + probability_vector_at_stationary[1] * 0.8
+    )
+    print(
+        f"{Fore.GREEN}The average probability of producing a working part in steady state is : {avg_prob_in_steady}"
+        f"{Style.RESET_ALL}"
+    )
+else:
+    print(f"{Fore.RED}Steady state has not been found yet!{Style.RESET_ALL}")

@@ -3,6 +3,11 @@ import numpy as np
 import hmmlearn.hmm as hmm
 from colorama import Fore, Style
 
+"""
+Used Reverence:
+Unsupervised learning and inference of Hidden Markov Models: hmmlearn
+https://hmmlearn.readthedocs.io/en/latest/index.html
+"""
 
 S = np.array(["HPM", "LPM"])
 V = np.array(["Working", "Defective"])
@@ -44,21 +49,15 @@ hmm_model.startprob_ = pi
 hmm_model.transmat_ = A
 hmm_model.emissionprob_ = B
 
-# The probability, of producing three defective parts in a row
-
 defective_trace = np.array([[1, 1, 1]])
 
-# score function will Compute the log prob under the model
+defective_log_prob = hmm_model.score(defective_trace)
 
-defective_trace_Log_probability = hmm_model.score(defective_trace)
-
-# as we know x = exp(ln(x))
-
-defective_trace_probability = math.exp(defective_trace_Log_probability)
+defective_prob = math.exp(defective_log_prob)
 
 print(
     f"{Fore.GREEN}The probability of producing three defective parts in a row "
-    f"is {defective_trace_probability:.4f}{Style.RESET_ALL}"
+    f"is {defective_prob:.4f}{Style.RESET_ALL}"
 )
 
 # What is the probability of the trace (defective, defective, defective) when starting in steady state?
@@ -75,12 +74,13 @@ hmm_steady_state_model.emissionprob_ = B
 
 defective_trace = np.array([[1, 1, 1]])
 
-defective_trace_Log_probability = hmm_steady_state_model.score(defective_trace)
+defective_log_prob = hmm_steady_state_model.score(defective_trace)
 
-defective_trace_probability = math.exp(defective_trace_Log_probability)
+defective_prob = math.exp(defective_log_prob)
 
 print(
-    f"{Fore.GREEN}The probability of producing three defective parts in a row is {defective_trace_probability:.4f}{Style.RESET_ALL}"
+    f"{Fore.GREEN}The probability of producing three defective parts in a row is "
+    f"{defective_prob:.4f}{Style.RESET_ALL}"
 )
 
 # What is the most likely path that led to the production of three working parts in a row
@@ -92,14 +92,12 @@ print(
 )
 
 
-work_traces_probability = np.array([[0, 0, 0]]).T
-work_traces_log_probability, traces_emission = hmm_model.decode(
-    work_traces_probability, algorithm="viterbi"
-)
+working_prob = np.array([[0, 0, 0]]).T
+working_log_prob, trace = hmm_model.decode(working_prob, algorithm="viterbi")
 print(
     f"{Fore.GREEN}The most likely path that leads to the production of three working parts "
-    f"in a row are: {', '.join(map(lambda i: S[i], traces_emission))}"
-    f" with the probability : {math.exp(work_traces_log_probability):.4f}{Style.RESET_ALL}"
+    f"in a row are: {', '.join(map(lambda i: S[i], trace))}"
+    f" with the probability : {math.exp(working_log_prob):.4f}{Style.RESET_ALL}"
 )
 
 # What is the most likely path for the trace (working, working, working) when starting in steady state?
@@ -109,14 +107,14 @@ print(
     f" when starting in steady state?{Style.RESET_ALL}"
 )
 
-work_traces_probability = np.array([[0, 0, 0]]).T
-work_traces_log_probability, traces_emission = hmm_steady_state_model.decode(
-    work_traces_probability, algorithm="viterbi"
+working_prob = np.array([[0, 0, 0]]).T
+working_log_prob, trace = hmm_steady_state_model.decode(
+    working_prob, algorithm="viterbi"
 )
 
 print(
     f"{Fore.GREEN}The most likely path that leads to the production of three working parts"
     f" in a row when starting in Steady state are:"
-    f"in a row are: {', '.join(map(lambda i: S[i], traces_emission))}"
-    f" with the probability : {math.exp(work_traces_log_probability):.4f}{Style.RESET_ALL}"
+    f"in a row are: {', '.join(map(lambda i: S[i], trace))}"
+    f" with the probability : {math.exp(working_log_prob):.4f}{Style.RESET_ALL}"
 )
